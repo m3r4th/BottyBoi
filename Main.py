@@ -1,6 +1,7 @@
 from dotenv import dotenv_values
 # import discord
 from discord.ext import commands
+import psycopg2 as psy
 
 # Set prefix and initialize
 bot = commands.Bot(command_prefix='+')
@@ -42,4 +43,11 @@ async def addQ(ctx, author, quote):
 if __name__ == '__main__':
     # Get token from .env
     token = dotenv_values("token.env").get("DISCORD_TOKEN")
+    db_name = dotenv_values("db.env").get("DB_NAME")
+    db_user = dotenv_values("db.env").get("DB_USER")
+    db_host = dotenv_values("db.env").get("DB_HOST")
+    db_port = dotenv_values("db.env").get("DB_PORT")
+    db_pw = dotenv_values("db.env").get("DB_PASSWORD")
+
+    conn = psy.connect(dbname=db_name, user=db_user, password=db_pw, dbhost=db_host, dbport=db_port)
     bot.run(token)

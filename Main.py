@@ -2,6 +2,7 @@ from dotenv import dotenv_values
 # import discord
 from discord.ext import commands
 import psycopg2 as psy
+from datetime import date
 
 # Set prefix and initialize
 bot = commands.Bot(command_prefix='+')
@@ -47,8 +48,9 @@ async def sign_up(ctx, name=""):
         user_name = name
     else:
         user_name = ctx.author.display_name
-    date = psy.DateFromTicks()
-    print(date)
+    py_date = date.today()
+    sql_date = psy.date(py_date.year, py_date.month, py_date.day)
+    print(sql_date)
     sql = ""
 
 if __name__ == '__main__':

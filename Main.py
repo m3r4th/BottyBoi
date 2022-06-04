@@ -3,6 +3,7 @@ from discord.ext import commands
 import psycopg2 as psy
 from datetime import date
 
+bot = commands.Bot(command_prefix='+')
 
 @bot.event
 async def on_ready():
@@ -55,7 +56,6 @@ async def sign_up(ctx, name=""):
 
 
 if __name__ == '__main__':
-    bot = commands.Bot(command_prefix='+')
     # Get token from .env
     token = dotenv_values("token.env").get("DISCORD_TOKEN")
     db_env = dotenv_values("db.env")

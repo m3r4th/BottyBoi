@@ -49,5 +49,5 @@ if __name__ == '__main__':
     db_port = dotenv_values("db.env").get("DB_PORT")
     db_pw = dotenv_values("db.env").get("DB_PASSWORD")
 
-    conn = psy.connect(dbname=db_name, user=db_user, password=db_pw, dbhost=db_host, dbport=db_port)
+    conn = psy.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host, port=db_port)
     bot.run(token)

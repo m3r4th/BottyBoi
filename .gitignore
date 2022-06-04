@@ -7,6 +7,9 @@ ENV/
 env.bak/
 venv.bak/
 
+# Ini's
+*.ini
+
 # PyCharm
 .idea/
 

@@ -49,7 +49,7 @@ async def sign_up(ctx, name=""):
     else:
         user_name = ctx.author.display_name
     py_date = date.today()
-    sql_date = psy.date(py_date.year, py_date.month, py_date.day)
+    sql_date = psy.Date(py_date.year, py_date.month, py_date.day)
     print(sql_date)
     sql = ""
 

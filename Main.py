@@ -40,11 +40,7 @@ async def add_q(ctx, author, quote):
     await ctx.send("**\"" + quote + "\"" + " Author: " + author + "** was added!")
 
 @bot.command(aliases=["signup"])
-async def sign_up(ctx):
-    print("signup no name!")
-
-@bot.command(aliases=["signup"])
-async def sign_up(ctx, name):
+async def sign_up(ctx, name=""):
     if name == "":
         print("no name")
     else:

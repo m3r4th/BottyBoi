@@ -42,8 +42,8 @@ async def add_q(ctx, author, quote):
 @bot.command(aliases=["signup"])
 async def sign_up(ctx, name=""):
     # Check if user already signed up:
-    discord_id = ctx.author.id
-    server_id = ctx.guild.id
+    discord_id = str(ctx.author.id)
+    server_id = str(ctx.guild.id)
     cur.execute("SELECT * FROM users WHERE discordid=%s AND serverid=%s", (discord_id, server_id))
     response = cur.fetchall()
     if len(response) != 0:
@@ -72,7 +72,7 @@ if __name__ == '__main__':
         print("Wrong usage: try with -h for help!")
     elif sys.argv[1] == "-h":
         print("Help:\n"
-              "-v: verbose mode"
+              "-v: verbose mode\n"
               "-h: print this help")
         exit(0)
     elif sys.argv[1] == "-v":

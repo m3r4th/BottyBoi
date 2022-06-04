@@ -36,18 +36,25 @@ async def guild_id(ctx):
 
 
 @bot.command(aliases=["addq"])
-async def addQ(ctx, author, quote):
+async def add_q(ctx, author, quote):
     await ctx.send("**\"" + quote + "\"" + " Author: " + author + "** was added!")
 
+@bot.command(aliases=["signup"])
+async def sign_up(ctx, name):
+    if name == "":
+        print("no name")
+    else:
+        print("name!")
 
 if __name__ == '__main__':
     # Get token from .env
     token = dotenv_values("token.env").get("DISCORD_TOKEN")
-    db_name = dotenv_values("db.env").get("DB_NAME")
-    db_user = dotenv_values("db.env").get("DB_USER")
-    db_host = dotenv_values("db.env").get("DB_HOST")
-    db_port = dotenv_values("db.env").get("DB_PORT")
-    db_pw = dotenv_values("db.env").get("DB_PASSWORD")
-
+    db_env = dotenv_values("db.env")
+    db_name = db_env.get("DB_NAME")
+    db_user = db_env.get("DB_USER")
+    db_host = db_env.get("DB_HOST")
+    db_port = db_env.get("DB_PORT")
+    db_pw = db_env.get("DB_PASSWORD")
     conn = psy.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host, port=db_port)
+    cur = conn.cursor()
     bot.run(token)

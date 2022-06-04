@@ -48,12 +48,16 @@ async def sign_up(ctx, name=""):
     response = cur.fetchall()
     if len(response) != 0:
         if VERBOSE:
-            print("already signed up!")
+            print("Already signed up!")
             print(response)
             return
 
     if name != "":
-        user_name = name
+        if len(name) <= 30:
+            user_name = name
+        else:
+            # TODO:NAME TO LONG, HANDLE!
+            return
     else:
         user_name = ctx.author.display_name
     py_date = date.today()

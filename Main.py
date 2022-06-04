@@ -43,7 +43,7 @@ async def add_q(ctx, author, quote):
 async def sign_up(ctx, name=""):
     discord_id = ctx.author.id
     server_id = ctx.guild.id
-    if name is not "":
+    if name != "":
         user_name = name
     else:
         user_name = ctx.author.display_name

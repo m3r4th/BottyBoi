@@ -1,11 +1,22 @@
 from dotenv import dotenv_values
-# import discord
 from discord.ext import commands
 import psycopg2 as psy
 from datetime import date
 
-# Set prefix and initialize
-bot = commands.Bot(command_prefix='+')
+if __name__ == '__main__':
+    bot = commands.Bot(command_prefix='+')
+    # Get token from .env
+    token = dotenv_values("token.env").get("DISCORD_TOKEN")
+    db_env = dotenv_values("db.env")
+    db_name = db_env.get("DB_NAME")
+    db_user = db_env.get("DB_USER")
+    db_host = db_env.get("DB_HOST")
+    db_port = db_env.get("DB_PORT")
+    db_pw = db_env.get("DB_PASSWORD")
+    conn = psy.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host, port=db_port)
+    cur = conn.cursor()
+    bot.run(token)
+
 
 @bot.event
 async def on_ready():
@@ -54,16 +65,5 @@ async def sign_up(ctx, name=""):
     sql = "INSERT INTO users (discordid, serverid, name, created) VALUES (%s, %s, %s, %s);"
     data = (discord_id, server_id, user_name, sql_date)
     cur.execute(sql, data)
+    conn.commit()
 
-if __name__ == '__main__':
-    # Get token from .env
-    token = dotenv_values("token.env").get("DISCORD_TOKEN")
-    db_env = dotenv_values("db.env")
-    db_name = db_env.get("DB_NAME")
-    db_user = db_env.get("DB_USER")
-    db_host = db_env.get("DB_HOST")
-    db_port = db_env.get("DB_PORT")
-    db_pw = db_env.get("DB_PASSWORD")
-    conn = psy.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host, port=db_port)
-    cur = conn.cursor()
-    bot.run(token)

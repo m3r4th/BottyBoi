@@ -41,10 +41,15 @@ async def add_q(ctx, author, quote):
 
 @bot.command(aliases=["signup"])
 async def sign_up(ctx, name=""):
-    if name == "":
-        print("no name")
+    discord_id = ctx.author.id
+    server_id = ctx.guild.id
+    if name is not "":
+        user_name = name
     else:
-        print("name!")
+        user_name = ctx.author.display_name
+    date = psy.DateFromTicks()
+    print(date)
+    sql = ""
 
 if __name__ == '__main__':
     # Get token from .env

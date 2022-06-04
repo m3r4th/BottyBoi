@@ -51,7 +51,9 @@ async def sign_up(ctx, name=""):
     py_date = date.today()
     sql_date = psy.Date(py_date.year, py_date.month, py_date.day)
     print(sql_date)
-    sql = ""
+    sql = "INSERT INTO users (discordid, serverid, name, created) VALUES (%s, %s, %s, %s);"
+    data = (discord_id, server_id, user_name, sql_date)
+    cur.execute(sql, data)
 
 if __name__ == '__main__':
     # Get token from .env

@@ -2,6 +2,7 @@ from dotenv import dotenv_values
 from discord.ext import commands
 import psycopg2 as psy
 from datetime import date
+import sys
 
 bot = commands.Bot(command_prefix='+')
 
@@ -40,22 +41,45 @@ async def add_q(ctx, author, quote):
 
 @bot.command(aliases=["signup"])
 async def sign_up(ctx, name=""):
+    # Check if user already signed up:
     discord_id = ctx.author.id
     server_id = ctx.guild.id
+    cur.execute("SELECT * FROM users WHERE discordid=%s AND serverid=%s", (discord_id, server_id))
+    response = cur.fetchall()
+    if len(response) != 0:
+        if VERBOSE:
+            print("already signed up!")
+            print(response)
+            return
+
     if name != "":
         user_name = name
     else:
         user_name = ctx.author.display_name
     py_date = date.today()
     sql_date = psy.Date(py_date.year, py_date.month, py_date.day)
-    print(sql_date)
     sql = "INSERT INTO users (discordid, serverid, name, created) VALUES (%s, %s, %s, %s);"
     data = (discord_id, server_id, user_name, sql_date)
+    if VERBOSE:
+        print(f"Signup execute: {data}")
     cur.execute(sql, data)
     conn.commit()
 
 
 if __name__ == '__main__':
+    # Parse arguments
+    if len(sys.argv) > 2:
+        print("Wrong usage: try with -h for help!")
+    elif sys.argv[1] is "-h":
+        print("Help:\n"
+              "-v: verbose mode"
+              "-h: print this help")
+        exit(0)
+    elif sys.argv[1] is "-v":
+        VERBOSE = True
+    else:
+        VERBOSE = False
+
     # Get token from .env
     token = dotenv_values("token.env").get("DISCORD_TOKEN")
     db_env = dotenv_values("db.env")

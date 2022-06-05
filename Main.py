@@ -37,6 +37,42 @@ async def guild_id(ctx):
 
 @bot.command(aliases=["addq"])
 async def add_q(ctx, author, quote):
+    adder_disc_id = str(ctx.author.id)
+    server_id = str(ctx.guild.id)
+    cur.execute("SELECT userid FROM users WHERE discordid=%s AND serverid=%s;", (adder_disc_id, server_id))
+    adder_rsp = cur.fetchall
+    if len(adder_rsp) > 1:
+        ctx.send("Something seems wrong in the database. Please contact an admin.")
+        if VERBOSE:
+            print(f"More than on entry in DB for discordID: {adder_disc_id} and serverID: {server_id}!\n")
+            print(adder_rsp + "\n")
+        return
+    elif len(adder_rsp) == 1:
+        adder_id = adder_rsp[1][1]
+    else:
+        ctx.send("You are trying to add a comment without being signed-up on this server\n"
+                 "Please use \"+signup\" first.")
+        return
+    cur.execute("SELECT userid FROM users WHERE name=%s and serverid=%s;", (author, server_id))
+    author_rsp = cur.fetchall()
+    if len(author_rsp) > 1:
+        ctx.send("Something seems wrong in the database. Please contact an admin.")
+        if VERBOSE:
+            print(f"More than on entry in DB for name: {author} and serverID: {server_id}!\n")
+            print(author_rsp + "\n")
+        return
+    elif len(author_rsp) == 1:
+        author_id = author_rsp[1][1]
+    else:
+        ctx.send("You are trying to add a quote to a user that does not exist.\n"
+                 "Please check \"+users\" first.")
+        return
+    py_date = date.today()
+    sql_date = psy.Date(py_date.year, py_date.month, py_date.day)
+    sql = "INSERT INTO quotes (authorid, addedbyid, serverid, content, created) " \
+          "VALUES (%s, %s, %s, %s, %s);"
+    cur.execute(sql, (author_id, adder_id, server_id, quote, sql_date))
+    conn.commit()
     await ctx.send("**\"" + quote + "\"" + " Author: " + author + "** was added!")
 
 

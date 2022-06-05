@@ -50,7 +50,7 @@ async def add_q(ctx, author, quote):
             print(adder_rsp + "\n")
         return
     elif len(adder_rsp) == 1:
-        adder_id = adder_rsp
+        adder_id = adder_rsp[0][0]
     else:
         ctx.send("You are trying to add a comment without being signed-up on this server\n"
                  "Please use \"+signup\" first.")
@@ -66,7 +66,7 @@ async def add_q(ctx, author, quote):
             print(author_rsp + "\n")
         return
     elif len(author_rsp) == 1:
-        author_id = author_rsp
+        author_id = author_rsp[0][0]
     else:
         ctx.send("You are trying to add a quote to a user that does not exist.\n"
                  "Please check \"+users\" first.")

@@ -39,6 +39,17 @@ async def guild_id(ctx):
 async def add_q(ctx, author, quote):
     await ctx.send("**\"" + quote + "\"" + " Author: " + author + "** was added!")
 
+
+@bot.command(aliases=["users"])
+async def show_users(ctx):
+    server_id = str(ctx.guild.id)
+    cur.execute("SELECT name FROM users WHERE serverid=%s;", (server_id, ))
+    server_users = cur.fetchall()
+    answer_string = "Following users exist on this server:\n"
+    for user in server_users:
+        answer_string += user + "   "
+    await ctx.send(answer_string)
+
 @bot.command(aliases=["signup"])
 async def sign_up(ctx, name=""):
     # Check if user already signed up:
@@ -51,15 +62,17 @@ async def sign_up(ctx, name=""):
             print("Already signed up!")
             print(response)
             return
+        await ctx.send("You are already signed-up on this server! :)")
 
     if name != "":
-        if len(name) <= 30:
-            user_name = name
-        else:
-            # TODO:NAME TO LONG, HANDLE!
-            return
+        user_name = name
     else:
         user_name = ctx.author.display_name
+    if len(user_name) > 30:
+        await ctx.send("Your Name on this server (or the one you specified is too long!\n"
+                       "Specify a custom name with \"+signup *your name*\"\n"
+                       "Names can be no longer than 30 characters.")
+        return
     py_date = date.today()
     sql_date = psy.Date(py_date.year, py_date.month, py_date.day)
     sql = "INSERT INTO users (discordid, serverid, name, created) VALUES (%s, %s, %s, %s);"

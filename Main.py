@@ -47,7 +47,7 @@ async def show_users(ctx):
     server_users = cur.fetchall()
     answer_string = "Following users exist on this server:\n"
     for user in server_users:
-        answer_string += user + "   "
+        answer_string += user[0] + "   "
     await ctx.send(answer_string)
 
 @bot.command(aliases=["signup"])

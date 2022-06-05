@@ -13,7 +13,7 @@ async def on_ready():
 
 @bot.event
 async def on_member_join(member):
-    print(member + " joined")
+    print(member + " joined!")
 
 
 @bot.event
@@ -122,6 +122,11 @@ async def sign_up(ctx, name=""):
     cur.execute(sql, data)
     conn.commit()
 
+
+@bot.command(aliases=["qby", "quotesby"])
+async def quotes_by(ctx):
+    #TODO REFACTOR QUERRY LOGIC
+    pass
 
 if __name__ == '__main__':
     # Parse arguments

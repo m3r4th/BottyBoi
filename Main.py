@@ -41,6 +41,8 @@ async def add_q(ctx, author, quote):
     server_id = str(ctx.guild.id)
     cur.execute("SELECT userid FROM users WHERE discordid=%s AND serverid=%s;", (adder_disc_id, server_id))
     adder_rsp = cur.fetchall()
+    if VERBOSE:
+        print(adder_rsp)
     if len(adder_rsp) > 1:
         ctx.send("Something seems wrong in the database. Please contact an admin.")
         if VERBOSE:
@@ -55,6 +57,8 @@ async def add_q(ctx, author, quote):
         return
     cur.execute("SELECT userid FROM users WHERE name=%s and serverid=%s;", (author, server_id))
     author_rsp = cur.fetchall()
+    if VERBOSE:
+        print(author_rsp)
     if len(author_rsp) > 1:
         ctx.send("Something seems wrong in the database. Please contact an admin.")
         if VERBOSE:

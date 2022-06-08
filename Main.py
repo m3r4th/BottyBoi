@@ -1,3 +1,4 @@
+import psycopg2
 from dotenv import dotenv_values
 from discord.ext import commands
 import psycopg2 as psy
@@ -44,7 +45,7 @@ async def add_q(ctx, author, quote):
     if VERBOSE:
         print(adder_rsp)
     if len(adder_rsp) > 1:
-        ctx.send("Something seems wrong in the database. Please contact an admin.")
+        send_db_error(ctx, error_msg="Discord & Serverid double DB entry.")
         if VERBOSE:
             print(f"More than on entry in DB for discordID: {adder_disc_id} and serverID: {server_id}!\n")
             print(adder_rsp + "\n")
@@ -60,7 +61,7 @@ async def add_q(ctx, author, quote):
     if VERBOSE:
         print(author_rsp)
     if len(author_rsp) > 1:
-        ctx.send("Something seems wrong in the database. Please contact an admin.")
+        send_db_error(ctx, error_msg="Name and Serverid double DB entry")
         if VERBOSE:
             print(f"More than on entry in DB for name: {author} and serverID: {server_id}!\n")
             print(author_rsp + "\n")
@@ -83,8 +84,7 @@ async def add_q(ctx, author, quote):
 @bot.command(aliases=["users"])
 async def show_users(ctx):
     server_id = str(ctx.guild.id)
-    cur.execute("SELECT name FROM users WHERE serverid=%s;", (server_id, ))
-    server_users = cur.fetchall()
+    server_users = get_server_users(server_id)
     answer_string = "Following users exist on this server:\n"
     for user in server_users:
         answer_string += user[0] + "   "
@@ -97,10 +97,13 @@ async def sign_up(ctx, name=""):
     server_id = str(ctx.guild.id)
     cur.execute("SELECT * FROM users WHERE discordid=%s AND serverid=%s", (discord_id, server_id))
     response = cur.fetchall()
-    if len(response) != 0:
+    if len(response) > 1:
+        send_db_error(ctx)
+        if VERBOSE:
+            print(response)
+    elif len(response) != 0:
         if VERBOSE:
             print("Already signed up!")
-            print(response)
             return
         await ctx.send("You are already signed-up on this server! :)")
 
@@ -125,8 +128,22 @@ async def sign_up(ctx, name=""):
 
 @bot.command(aliases=["qby", "quotesby"])
 async def quotes_by(ctx):
-    #TODO REFACTOR QUERRY LOGIC
-    pass
+    #TODO REFACTOR SQL QUERRY LOGIC
+    # TEST EXCEPTION
+    raise psy.IntegrityError("Test exception")
+
+
+async def send_db_error(ctx, error_msg):
+    await ctx.send("Something seems wrong in the database. Please contact an admin.")
+    if error_msg != "":
+        raise psy.IntegrityError(error_msg)
+    else:
+        psy.IntegrityError()
+
+def get_server_users(server_id):
+    cur.execute("SELECT name FROM users WHERE serverid=%s;", (server_id,))
+    return cur.fetchall()
+
 
 if __name__ == '__main__':
     # Parse arguments

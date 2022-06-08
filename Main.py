@@ -149,12 +149,12 @@ if __name__ == '__main__':
     # Parse arguments
     if len(sys.argv) > 2:
         print("Wrong usage: try with -h for help!")
-    elif sys.argv[1] == "-h":
+    elif "-h" in sys.argv:
         print("Help:\n"
               "-v: verbose mode\n"
               "-h: print this help")
         exit(0)
-    elif sys.argv[1] == "-v":
+    elif "-v" in sys.argv:
         VERBOSE = True
     else:
         VERBOSE = False
